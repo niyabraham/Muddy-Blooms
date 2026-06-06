@@ -5,12 +5,14 @@ const CartContext = createContext();
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
+  const getId = (plant) => plant._id || plant.id;
+
   const addToCart = (plant) => {
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === plant.id);
+      const existing = prev.find((item) => getId(item) === getId(plant));
       if (existing) {
         return prev.map((item) =>
-          item.id === plant.id
+          getId(item) === getId(plant)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -20,13 +22,13 @@ export function CartProvider({ children }) {
   };
 
   const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => prev.filter((item) => getId(item) !== id));
   };
 
   const updateQuantity = (id, quantity) => {
     if (quantity < 1) return;
     setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prev.map((item) => (getId(item) === id ? { ...item, quantity } : item))
     );
   };
 

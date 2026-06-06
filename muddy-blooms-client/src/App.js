@@ -8,6 +8,8 @@ import Cart from './pages/Cart';
 import Booking from './pages/Booking';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Checkout from './pages/Checkout';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
               <Route path="/booking" element={<Booking />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </main>
           <Footer />

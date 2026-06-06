@@ -31,50 +31,42 @@ export default function Cart() {
 
         {/* Cart Items */}
         <div className="md:col-span-2 flex flex-col gap-4">
-          {cartItems.map((item) => (
-            <div key={item.id}
-              className="bg-white rounded-2xl p-5 flex items-center gap-5 shadow-sm">
-
-              {/* Emoji */}
-              <div className="bg-mist w-20 h-20 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
-                {item.emoji}
-              </div>
-
-              {/* Info */}
-              <div className="flex-grow">
-                <h3 className="font-display text-forest font-bold text-lg">{item.name}</h3>
-                <p className="text-gray-400 text-sm">{item.category} Plant</p>
-                <p className="text-fern font-bold mt-1">₹{item.price}</p>
-              </div>
-
-              {/* Quantity */}
-              <div className="flex items-center gap-2">
+          {cartItems.map((item) => {
+            const itemId = item._id || item.id;
+            return (
+                <div key={itemId} className="bg-white rounded-2xl p-5 flex items-center gap-5 shadow-sm">
+                <div className="bg-mist w-20 h-20 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
+                    {item.emoji}
+                </div>
+                <div className="flex-grow">
+                    <h3 className="font-display text-forest font-bold text-lg">{item.name}</h3>
+                    <p className="text-gray-400 text-sm">{item.category} Plant</p>
+                    <p className="text-fern font-bold mt-1">₹{item.price}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                    onClick={() => updateQuantity(itemId, item.quantity - 1)}
+                    className="w-8 h-8 rounded-full bg-mist text-forest font-bold hover:bg-sage transition flex items-center justify-center">
+                    −
+                    </button>
+                    <span className="w-6 text-center font-bold text-forest">{item.quantity}</span>
+                    <button
+                    onClick={() => updateQuantity(itemId, item.quantity + 1)}
+                    className="w-8 h-8 rounded-full bg-mist text-forest font-bold hover:bg-sage transition flex items-center justify-center">
+                    +
+                    </button>
+                </div>
+                <div className="text-right min-w-[70px]">
+                    <p className="font-bold text-forest">₹{item.price * item.quantity}</p>
+                </div>
                 <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  className="w-8 h-8 rounded-full bg-mist text-forest font-bold hover:bg-sage transition flex items-center justify-center">
-                  −
+                    onClick={() => removeFromCart(itemId)}
+                    className="text-gray-300 hover:text-red-400 transition text-xl ml-2">
+                    ✕
                 </button>
-                <span className="w-6 text-center font-bold text-forest">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="w-8 h-8 rounded-full bg-mist text-forest font-bold hover:bg-sage transition flex items-center justify-center">
-                  +
-                </button>
-              </div>
-
-              {/* Subtotal */}
-              <div className="text-right min-w-[70px]">
-                <p className="font-bold text-forest">₹{item.price * item.quantity}</p>
-              </div>
-
-              {/* Remove */}
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="text-gray-300 hover:text-red-400 transition text-xl ml-2">
-                ✕
-              </button>
-            </div>
-          ))}
+                </div>
+            );
+            })}
 
           <Link to="/shop"
             className="text-fern text-sm hover:text-forest transition mt-2 inline-block">
@@ -99,9 +91,9 @@ export default function Cart() {
             <span>₹{totalPrice}</span>
           </div>
 
-          <button className="w-full bg-forest text-white py-3 rounded-full font-bold mt-6 hover:bg-fern transition text-sm">
+          <Link to="/checkout" className="w-full bg-forest text-white py-3 rounded-full font-bold mt-6 hover:bg-fern transition text-sm block text-center">
             Proceed to Checkout →
-          </button>
+          </Link>
 
           <div className="mt-4 text-center text-xs text-gray-400">
             🔒 Secure checkout · Free delivery across Kerala

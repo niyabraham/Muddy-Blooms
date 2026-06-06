@@ -1,3 +1,4 @@
+import { createBooking } from '../api';
 import { useState } from 'react';
 
 const services = [
@@ -21,9 +22,22 @@ export default function Booking() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+  try {
+    await createBooking({
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      address: form.address,
+      service: selectedService,
+      date: form.date,
+      message: form.message,
+    });
     setSubmitted(true);
-  };
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  }
+};
 
   if (submitted) {
     return (
