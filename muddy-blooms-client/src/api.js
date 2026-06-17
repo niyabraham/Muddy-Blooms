@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = 'https://muddy-blooms-api.onrender.com/api';
 
 export const fetchPlants = async () => {
   const res = await fetch(`${API}/plants`);
