@@ -13,10 +13,12 @@ app.use(express.json());
 const plantRoutes   = require('./routes/plants');
 const orderRoutes   = require('./routes/orders');
 const bookingRoutes = require('./routes/bookings');
+const paymentRoutes = require('./routes/payment');
 
 app.use('/api/plants',   plantRoutes);
 app.use('/api/orders',   orderRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/payment',  paymentRoutes);
 
 // Test route
 app.get('/', (req, res) => {

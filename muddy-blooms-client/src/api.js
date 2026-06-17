@@ -51,3 +51,21 @@ export const updateBookingStatus = async (id, status) => {
   });
   return res.json();
 };
+
+export const createRazorpayOrder = async (amount) => {
+  const res = await fetch(`${API}/payment/create-order`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount }),
+  });
+  return res.json();
+};
+
+export const verifyPayment = async (paymentData) => {
+  const res = await fetch(`${API}/payment/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(paymentData),
+  });
+  return res.json();
+};

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { createOrder } from '../api';
+import { createOrder, createRazorpayOrder, verifyPayment } from '../api';
 import { Link } from 'react-router-dom';
 
 export default function Checkout() {
@@ -16,31 +16,77 @@ export default function Checkout() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleOrder = async () => {
-    if (!form.name || !form.phone || !form.address) return;
-    setLoading(true);
-    try {
-      const order = await createOrder({
-        customerName: form.name,
-        customerPhone: form.phone,
-        customerEmail: form.email,
-        address: `${form.address}, ${form.city} - ${form.pincode}`,
-        items: cartItems.map(item => ({
-          plantId: item._id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        totalAmount: totalPrice,
-      });
-      setOrderId(order._id);
-      setFinalTotal(totalPrice);
-      clearCart();
-      setSubmitted(true);
-    } catch (err) {
-      alert('Something went wrong. Please try again.');
-    }
+  if (!form.name || !form.phone || !form.address) return;
+  setLoading(true);
+
+  try {
+    // Step 1: Create Razorpay order
+    const razorpayOrder = await createRazorpayOrder(totalPrice);
+
+    // Step 2: Open Razorpay Checkout popup
+    const options = {
+      key: 'rzp_test_T2dwMgnwrT3lXB', // replace with your actual test Key ID
+      amount: razorpayOrder.amount,
+      currency: 'INR',
+      name: 'Muddy Blooms',
+      description: 'Plant Order Payment',
+      order_id: razorpayOrder.id,
+      handler: async function (response) {
+        // Step 3: Verify payment signature
+        const verification = await verifyPayment({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+
+        if (verification.verified) {
+          // Step 4: Save order to database
+          const order = await createOrder({
+            customerName: form.name,
+            customerPhone: form.phone,
+            customerEmail: form.email,
+            address: `${form.address}, ${form.city} - ${form.pincode}`,
+            items: cartItems.map(item => ({
+              plantId: item._id,
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+            totalAmount: totalPrice,
+            paymentStatus: 'paid',
+          });
+          setOrderId(order._id);
+          setFinalTotal(totalPrice);
+          clearCart();
+          setSubmitted(true);
+        } else {
+          alert('Payment verification failed. Please contact support.');
+        }
+        setLoading(false);
+      },
+      prefill: {
+        name: form.name,
+        contact: form.phone,
+        email: form.email,
+      },
+      theme: {
+        color: '#1C3A2A',
+      },
+      modal: {
+        ondismiss: function () {
+          setLoading(false);
+        },
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
     setLoading(false);
-  };
+  }
+};
 
   if (cartItems.length === 0 && !submitted) {
     return (
