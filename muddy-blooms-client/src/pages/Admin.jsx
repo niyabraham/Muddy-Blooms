@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { fetchOrders, fetchBookings, updateOrderStatus, updateBookingStatus } from '../api';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered'];
@@ -15,7 +14,6 @@ const statusColors = {
 
 export default function Admin() {
   const [tab, setTab] = useState('orders');
-  const { logout } = useAuth();
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
