@@ -1,4 +1,6 @@
-const API = 'https://muddy-blooms-api.onrender.com/api';
+// ✅ CHANGE: export BASE_URL so Shop.jsx can use it for image paths
+export const BASE_URL = 'https://muddy-blooms-api.onrender.com';
+const API = `${BASE_URL}/api`;
 
 export const fetchPlants = async () => {
   const res = await fetch(`${API}/plants`);

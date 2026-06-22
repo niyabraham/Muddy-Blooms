@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { fetchPlants } from '../api';
+import { fetchPlants, BASE_URL } from '../api'; // ✅ CHANGE: import BASE_URL
 
 const categories = ["All", "Indoor", "Outdoor", "Succulent"];
 
@@ -84,7 +84,7 @@ export default function Shop() {
                     group-hover:scale-105 transition-transform duration-300">
                     {plant.image ? (
                       <img
-                          src={`http://localhost:5000${plant.image}`}
+                          src={`${BASE_URL}${plant.image}`}  // ✅ CHANGE: was http://localhost:5000
                           alt={plant.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
