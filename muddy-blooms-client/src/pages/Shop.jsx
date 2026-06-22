@@ -83,8 +83,16 @@ export default function Shop() {
                   <div className="bg-mist h-44 flex items-center justify-center overflow-hidden
                     group-hover:scale-105 transition-transform duration-300">
                     {plant.image ? (
-                      <img src={plant.image} alt={plant.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                    ) : null}
+                      <img
+                          src={`http://localhost:5000${plant.image}`}
+                          alt={plant.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            console.log("Image failed:", e.target.src);
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />) : null}
                     <span className="text-6xl" style={{ display: plant.image ? 'none' : 'flex' }}>{plant.emoji}</span>
                   </div>
                   <div className="p-4">
