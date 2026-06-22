@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -8,6 +9,11 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+app.use(
+  '/images',
+  express.static(path.join(__dirname, '../images'))
+);
 
 // Routes
 const plantRoutes   = require('./routes/plants');
