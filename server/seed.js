@@ -9,7 +9,7 @@ const plants = [
     category: "Indoor",
     tag: "Bestseller",
     emoji: "🪴",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/berkin.jpg",
+    image: "/images/plantpictures/berkin.jpg",
     description: "A stunning variegated plant with bold white stripes.",
     stock: 20
   },
@@ -19,7 +19,7 @@ const plants = [
     category: "Indoor",
     tag: "Low Maintenance",
     emoji: "🌿",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/dwarfzz.jpg",
+    image: "/images/plantpictures/dwarfzz.jpg",
     description: "Nearly indestructible. Perfect for beginners.",
     stock: 15
   },
@@ -29,7 +29,7 @@ const plants = [
     category: "Succulent",
     tag: "Succulent",
     emoji: "🌵",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/haworthia.jpg",
+    image: "/images/plantpictures/haworthia.jpg",
     description: "A compact succulent that thrives in low light.",
     stock: 30
   },
@@ -39,7 +39,7 @@ const plants = [
     category: "Indoor",
     tag: "Air Purifier",
     emoji: "🎋",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/indoorbamboo.jpg",
+    image: "/images/plantpictures/indoorbamboo.jpg",
     description: "Brings a zen feel and purifies indoor air.",
     stock: 12
   },
@@ -49,7 +49,7 @@ const plants = [
     category: "Succulent",
     tag: "Rare",
     emoji: "🌼",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/yellow.jpg",
+    image: "/images/plantpictures/yellow.jpg",
     description: "Rare and striking with bright yellow flowers.",
     stock: 8
   },
@@ -59,7 +59,7 @@ const plants = [
     category: "Indoor",
     tag: "Trending",
     emoji: "🍃",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/philadendron.jpg",
+    image: "/images/plantpictures/philadendron.jpg",
     description: "Lush tropical leaves, very popular right now.",
     stock: 18
   },
@@ -69,7 +69,7 @@ const plants = [
     category: "Indoor",
     tag: "Air Purifier",
     emoji: "🌸",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/peacelily.jpg",
+    image: "/images/plantpictures/peacelily.jpg",
     description: "Elegant white blooms and an excellent air purifier.",
     stock: 25
   },
@@ -79,7 +79,7 @@ const plants = [
     category: "Outdoor",
     tag: "Flowering",
     emoji: "🌺",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/bougainveilla.jpg",
+    image: "/images/plantpictures/bougainveilla.jpg",
     description: "Vibrant flowering climber for outdoor walls.",
     stock: 20
   },
@@ -89,7 +89,7 @@ const plants = [
     category: "Outdoor",
     tag: "Flowering",
     emoji: "🌻",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/ixora.jpg",
+    image: "/images/plantpictures/ixora.jpg",
     description: "Bright clusters of flowers, great for hedges.",
     stock: 35
   },
@@ -99,7 +99,7 @@ const plants = [
     category: "Outdoor",
     tag: "Rare",
     emoji: "🌹",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/adenium.jpg",
+    image: "/images/plantpictures/adenium.jpg",
     description: "Desert rose with stunning trumpet flowers.",
     stock: 10
   },
@@ -109,7 +109,7 @@ const plants = [
     category: "Succulent",
     tag: "Medicinal",
     emoji: "🌱",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/aloevera.jpg",
+    image: "/images/plantpictures/aloevera.jpg",
     description: "Famous for its healing gel and easy care.",
     stock: 40
   },
@@ -119,7 +119,7 @@ const plants = [
     category: "Indoor",
     tag: "Bestseller",
     emoji: "🪴",
-    image: "https://muddy-blooms-api.onrender.com/images/plantpictures/snakeplant.jpg",
+    image: "/images/plantpictures/snakeplant.jpg",
     description: "One of the best air purifiers. Nearly care-free.",
     stock: 22
   }
