@@ -9,8 +9,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
-  const [addedItems, setAddedItems] = useState([]);
-  const { addToCart } = useCart();
+  const { addToCart, cartItems, updateQuantity } = useCart();
 
   useEffect(() => {
     fetchPlants()
@@ -25,11 +24,7 @@ export default function Shop() {
   });
 
   const handleAdd = (plant) => {
-    addToCart(plant);
-    setAddedItems((prev) => [...prev, plant._id]);
-    setTimeout(() => {
-      setAddedItems((prev) => prev.filter((i) => i !== plant._id));
-    }, 1500);
+  addToCart(plant);
   };
 
   return (
@@ -101,16 +96,33 @@ export default function Shop() {
                     <p className="text-xs text-gray-400 mb-1">{plant.category} Plant</p>
                     <p className="text-xs text-gray-400 mb-3 leading-relaxed">{plant.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-fern font-bold text-lg">₹{plant.price}</span>
+                    <span className="text-fern font-bold text-lg">₹{plant.price}</span>
+                    {cartItems.find(item => (item._id || item.id) === plant._id) ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => {
+                            const item = cartItems.find(i => (i._id || i.id) === plant._id);
+                            updateQuantity(plant._id, item.quantity - 1);
+                          }}
+                          className="w-7 h-7 rounded-full bg-forest text-white font-bold hover:bg-fern transition text-sm flex items-center justify-center">
+                          −
+                        </button>
+                        <span className="text-forest font-bold text-sm w-5 text-center">
+                          {cartItems.find(item => (item._id || item.id) === plant._id)?.quantity}
+                        </span>
+                        <button
+                          onClick={() => handleAdd(plant)}
+                          className="w-7 h-7 rounded-full bg-forest text-white font-bold hover:bg-fern transition text-sm flex items-center justify-center">
+                          +
+                        </button>
+                      </div>
+                    ) : (
                       <button onClick={() => handleAdd(plant)}
-                        className={`text-xs px-3 py-2 rounded-full transition font-bold ${
-                          addedItems.includes(plant._id)
-                            ? "bg-leaf text-white"
-                            : "bg-forest text-white hover:bg-fern"
-                        }`}>
-                        {addedItems.includes(plant._id) ? "✓ Added!" : "+ Cart"}
+                        className="text-xs px-3 py-2 rounded-full transition font-bold bg-forest text-white hover:bg-fern">
+                        + Cart
                       </button>
-                    </div>
+                    )}
+                  </div>
                   </div>
                 </div>
               ))}
