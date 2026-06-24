@@ -14,6 +14,8 @@ import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
+import { Navigate } from 'react-router-dom';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
                     <Admin />
                   </ProtectedRoute>
                 } />
+                <Route path="/landscaping" element={<Navigate to="/booking" replace />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />

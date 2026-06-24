@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { sendContactMessage } from '../api';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
@@ -6,8 +7,14 @@ export default function Contact() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = () => {
-    if (form.name && form.message) setSent(true);
+  const handleSubmit = async () => {
+  if (!form.name || !form.message) return;
+  try {
+    await sendContactMessage(form);
+    setSent(true);
+  } catch (err) {
+    alert('Something went wrong. Please try again.');
+  }
   };
 
   return (

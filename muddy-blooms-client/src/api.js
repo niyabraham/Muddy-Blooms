@@ -1,3 +1,5 @@
+// Wake up Render backend on app load
+fetch('https://muddy-blooms-api.onrender.com/').catch(() => {});
 // ✅ CHANGE: export BASE_URL so Shop.jsx can use it for image paths
 export const BASE_URL = 'https://muddy-blooms-api.onrender.com';
 const API = `${BASE_URL}/api`;
@@ -59,6 +61,15 @@ export const createRazorpayOrder = async (amount) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ amount }),
+  });
+  return res.json();
+};
+
+export const sendContactMessage = async (formData) => {
+  const res = await fetch(`${API}/contact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
   });
   return res.json();
 };

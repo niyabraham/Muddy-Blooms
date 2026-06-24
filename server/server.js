@@ -3,12 +3,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const contactRoutes = require('./routes/contact');
+
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/contact', contactRoutes);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

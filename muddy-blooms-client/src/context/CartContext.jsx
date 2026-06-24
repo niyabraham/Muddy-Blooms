@@ -1,9 +1,14 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+  try {
+    const saved = localStorage.getItem('muddy_cart');
+    return saved ? JSON.parse(saved) : [];
+  } catch { return []; }
+  });
 
   const getId = (plant) => plant._id || plant.id;
 
@@ -45,6 +50,10 @@ export function CartProvider({ children }) {
     </CartContext.Provider>
   );
 }
+
+useEffect(() => {
+  localStorage.setItem('muddy_cart', JSON.stringify(cartItems));
+}, [cartItems]);
 
 export function useCart() {
   return useContext(CartContext);
