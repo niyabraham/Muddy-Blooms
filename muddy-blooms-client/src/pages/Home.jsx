@@ -1,6 +1,18 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchPlants, BASE_URL } from '../api';
+import { useCart } from '../context/CartContext';
 
 export default function Home() {
+  const [featuredPlants, setFeaturedPlants] = useState([]);
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    fetchPlants().then(plants => {
+      setFeaturedPlants(plants.slice(0, 4));
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className="bg-cream">
 
@@ -71,28 +83,55 @@ export default function Home() {
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { name: "Berkin", price: "₹450", tag: "Bestseller" },
-              { name: "Dwarf ZZ", price: "₹380", tag: "Low Maintenance" },
-              { name: "Haworthia", price: "₹220", tag: "Succulent" },
-              { name: "Indoor Bamboo", price: "₹550", tag: "Air Purifier" },
-            ].map((plant) => (
-              <div key={plant.name} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition group">
-                <div className="bg-mist h-48 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
-                  🪴
-                </div>
-                <div className="p-4">
-                  <span className="text-xs text-leaf font-medium">{plant.tag}</span>
-                  <h3 className="font-display text-forest font-bold mt-1">{plant.name}</h3>
-                  <div className="flex items-center justify-between mt-3">
-                    <span className="text-fern font-bold">{plant.price}</span>
-                    <button className="bg-forest text-white text-xs px-3 py-1 rounded-full hover:bg-fern transition">
-                      Add to Cart
-                    </button>
+            {featuredPlants.length === 0 ? (
+              // Loading skeleton
+              [1,2,3,4].map(i => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
+                  <div className="bg-gray-200 h-48" />
+                  <div className="p-4 space-y-2">
+                    <div className="bg-gray-200 h-3 w-16 rounded" />
+                    <div className="bg-gray-200 h-4 w-24 rounded" />
+                    <div className="bg-gray-200 h-3 w-32 rounded" />
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              featuredPlants.map((plant) => (
+                <div key={plant._id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition group">
+                  <div className="h-48 overflow-hidden">
+                    {plant.image ? (
+                      <img
+                          src={`${BASE_URL}${plant.image}`}
+                          alt={plant.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          onError={(e) => {
+                            console.log("Failed:", e.target.src);
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                    ) : null}
+                    <div
+                      className="bg-mist h-full items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300"
+                      style={{ display: plant.image ? 'none' : 'flex' }}>
+                      {plant.emoji}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <span className="text-xs text-leaf font-medium">{plant.tag}</span>
+                    <h3 className="font-display text-forest font-bold mt-1">{plant.name}</h3>
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-fern font-bold">₹{plant.price}</span>
+                      <button
+                        onClick={() => addToCart(plant)}
+                        className="bg-forest text-white text-xs px-3 py-1 rounded-full hover:bg-fern transition">
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="text-center mt-12">

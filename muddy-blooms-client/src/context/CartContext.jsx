@@ -4,10 +4,10 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
-  try {
-    const saved = localStorage.getItem('muddy_cart');
-    return saved ? JSON.parse(saved) : [];
-  } catch { return []; }
+    try {
+      const saved = localStorage.getItem('muddy_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
   });
 
   const getId = (plant) => plant._id || plant.id;
@@ -31,7 +31,10 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = (id, quantity) => {
-    if (quantity < 1) return;
+    if (quantity < 1) {
+      removeFromCart(id);
+      return;
+    }
     setCartItems((prev) =>
       prev.map((item) => (getId(item) === id ? { ...item, quantity } : item))
     );
@@ -42,6 +45,10 @@ export function CartProvider({ children }) {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  useEffect(() => {
+    localStorage.setItem('muddy_cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
   return (
     <CartContext.Provider value={{
       cartItems, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice
@@ -50,10 +57,6 @@ export function CartProvider({ children }) {
     </CartContext.Provider>
   );
 }
-
-useEffect(() => {
-  localStorage.setItem('muddy_cart', JSON.stringify(cartItems));
-}, [cartItems]);
 
 export function useCart() {
   return useContext(CartContext);
