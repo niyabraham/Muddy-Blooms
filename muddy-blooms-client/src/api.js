@@ -4,6 +4,16 @@ fetch('https://muddy-blooms-api.onrender.com/').catch(() => {});
 export const BASE_URL = 'https://muddy-blooms-api.onrender.com';
 const API = `${BASE_URL}/api`;
 
+const getAdminHeaders = () => {
+  const password = process.env.REACT_APP_ADMIN_PASSWORD;
+  if (!password) return {};
+
+  return {
+    'x-admin-password': password,
+    Authorization: `Bearer ${password}`,
+  };
+};
+
 export const fetchPlants = async () => {
   const res = await fetch(`${API}/plants`);
   return res.json();
@@ -29,19 +39,26 @@ export const createBooking = async (bookingData) => {
 
 // Admin APIs
 export const fetchOrders = async () => {
-  const res = await fetch(`${API}/orders`);
+  const res = await fetch(`${API}/orders`, {
+    headers: getAdminHeaders(),
+  });
   return res.json();
 };
 
 export const fetchBookings = async () => {
-  const res = await fetch(`${API}/bookings`);
+  const res = await fetch(`${API}/bookings`, {
+    headers: getAdminHeaders(),
+  });
   return res.json();
 };
 
 export const updateOrderStatus = async (id, status) => {
   const res = await fetch(`${API}/orders/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAdminHeaders(),
+    },
     body: JSON.stringify({ status }),
   });
   return res.json();
@@ -50,7 +67,10 @@ export const updateOrderStatus = async (id, status) => {
 export const updateBookingStatus = async (id, status) => {
   const res = await fetch(`${API}/bookings/${id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAdminHeaders(),
+    },
     body: JSON.stringify({ status }),
   });
   return res.json();

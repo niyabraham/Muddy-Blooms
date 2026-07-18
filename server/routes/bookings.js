@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const sendEmail = require('../utils/sendEmail');
+const adminAuth = require('../middleware/adminAuth');
 
 // GET all bookings (admin)
-router.get('/', async (req, res) => {
+router.get('/', adminAuth, async (req, res) => {
   try {
     const bookings = await Booking.find().sort({ createdAt: -1 });
     res.json(bookings);
@@ -41,7 +42,7 @@ router.post('/', async (req, res) => {
 });
 
 // PATCH update booking status (admin)
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', adminAuth, async (req, res) => {
   try {
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(booking);

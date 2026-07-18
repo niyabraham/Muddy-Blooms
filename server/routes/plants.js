@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Plant = require('../models/Plant');
+const adminAuth = require('../middleware/adminAuth');
 
 // GET all plants
 router.get('/', async (req, res) => {
@@ -13,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST add a plant (admin)
-router.post('/', async (req, res) => {
+router.post('/', adminAuth, async (req, res) => {
   try {
     const plant = new Plant(req.body);
     await plant.save();
@@ -24,7 +25,7 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE a plant (admin)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', adminAuth, async (req, res) => {
   try {
     await Plant.findByIdAndDelete(req.params.id);
     res.json({ message: 'Plant deleted' });
