@@ -54,30 +54,37 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Floating plant collage */}
-          <div className="relative hidden md:flex items-center justify-center h-[420px]">
-            <div className="absolute w-72 h-72 bg-leaf/10 rounded-full blur-2xl" />
+          {/* Botanical illustration */}
+          <div className="relative hidden md:flex items-center justify-center h-[460px]">
+            <svg
+              viewBox="0 0 400 500"
+              className="h-full w-auto animate-[sway_9s_ease-in-out_infinite]"
+              style={{ transformOrigin: '50% 100%' }}
+            >
+              <defs>
+                <path id="leaf" d="M0,0 C14,-22 14,-52 0,-86 C-14,-52 -14,-22 0,0 Z" />
+              </defs>
 
-            <div className="absolute top-0 left-6 animate-[float_6s_ease-in-out_infinite]">
-              <div className="bg-mist rounded-3xl w-40 h-48 shadow-2xl flex items-center justify-center text-7xl rotate-[-8deg]">
-                🪴
-              </div>
-            </div>
-            <div className="absolute bottom-2 right-2 animate-[float_7s_ease-in-out_infinite_1s]">
-              <div className="bg-cream rounded-3xl w-44 h-52 shadow-2xl flex items-center justify-center text-8xl rotate-[6deg]">
-                🌿
-              </div>
-            </div>
-            <div className="absolute top-20 right-16 animate-[float_5s_ease-in-out_infinite_0.5s]">
-              <div className="bg-earth rounded-full w-24 h-24 shadow-xl flex items-center justify-center text-4xl rotate-[10deg]">
-                🌸
-              </div>
-            </div>
-            <div className="absolute bottom-28 left-14 animate-[float_8s_ease-in-out_infinite_1.5s]">
-              <div className="bg-sage rounded-2xl w-28 h-28 shadow-xl flex items-center justify-center text-4xl rotate-[-6deg]">
-                🌱
-              </div>
-            </div>
+              <path
+                d="M200,470 C168,388 232,344 196,262 C160,180 230,144 206,64"
+                fill="none" stroke="#2D6A4F" strokeWidth="3" strokeLinecap="round" opacity="0.9"
+              />
+
+              <use href="#leaf" transform="translate(200,470) rotate(-108) scale(1.3)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(182,415) rotate(75) scale(1.2)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(204,362) rotate(-72) scale(1.15)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(180,312) rotate(95) scale(1.05)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(202,266) rotate(-62) scale(1)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(182,220) rotate(90) scale(0.9)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(204,178) rotate(-52) scale(0.8)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(188,136) rotate(100) scale(0.68)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(204,98) rotate(-42) scale(0.56)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+              <use href="#leaf" transform="translate(207,64) rotate(20) scale(0.42)" fill="#A8C97F" stroke="#1C3A2A" strokeWidth="1.5" />
+
+              <circle cx="176" cy="330" r="6" fill="#D4A843" />
+              <circle cx="222" cy="180" r="5" fill="#D4A843" />
+              <circle cx="192" cy="112" r="4" fill="#D4A843" />
+            </svg>
           </div>
         </div>
 
