@@ -42,6 +42,10 @@ export const fetchOrders = async () => {
   const res = await fetch(`${API}/orders`, {
     headers: getAdminHeaders(),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to load orders (${res.status})`);
+  }
   return res.json();
 };
 
@@ -49,6 +53,10 @@ export const fetchBookings = async () => {
   const res = await fetch(`${API}/bookings`, {
     headers: getAdminHeaders(),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to load bookings (${res.status})`);
+  }
   return res.json();
 };
 
@@ -61,6 +69,10 @@ export const updateOrderStatus = async (id, status) => {
     },
     body: JSON.stringify({ status }),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to update order (${res.status})`);
+  }
   return res.json();
 };
 
@@ -73,6 +85,10 @@ export const updateBookingStatus = async (id, status) => {
     },
     body: JSON.stringify({ status }),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to update booking (${res.status})`);
+  }
   return res.json();
 };
 

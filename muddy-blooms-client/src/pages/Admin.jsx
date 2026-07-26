@@ -17,10 +17,19 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     Promise.all([fetchOrders(), fetchBookings()])
-      .then(([o, b]) => { setOrders(o); setBookings(b); setLoading(false); });
+      .then(([o, b]) => {
+        setOrders(Array.isArray(o) ? o : []);
+        setBookings(Array.isArray(b) ? b : []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || 'Failed to load admin data.');
+        setLoading(false);
+      });
   }, []);
 
   const handleOrderStatus = async (id, status) => {
@@ -82,7 +91,14 @@ export default function Admin() {
           </button>
         </div>
 
-        {loading ? (
+        {error ? (
+          <div className="text-center py-20 bg-white rounded-2xl">
+            <p className="text-5xl mb-3">⚠️</p>
+            <p className="text-forest font-bold mb-2">Couldn't load admin data</p>
+            <p className="text-fern text-sm mb-2">{error}</p>
+            <p className="text-gray-400 text-xs">Double check REACT_APP_ADMIN_PASSWORD is set correctly, or try logging in again.</p>
+          </div>
+        ) : loading ? (
           <div className="text-center py-20">
             <p className="text-5xl animate-pulse mb-4">🌿</p>
             <p className="text-fern">Loading data...</p>
