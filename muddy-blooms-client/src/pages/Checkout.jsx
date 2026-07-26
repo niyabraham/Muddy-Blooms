@@ -53,8 +53,11 @@ export default function Checkout() {
               quantity: item.quantity,
             })),
             totalAmount: totalPrice,
-            paymentStatus: 'paid',
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
           });
+          
           setOrderId(order._id);
           setFinalTotal(totalPrice);
           clearCart();
