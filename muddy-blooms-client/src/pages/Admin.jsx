@@ -23,7 +23,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {  // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {  
     Promise.all([fetchOrders(), fetchBookings()])
       .then(([o, b]) => {
         setOrders(Array.isArray(o) ? o : []);
@@ -39,7 +39,7 @@ export default function Admin() {
         setError(err.message || 'Failed to load admin data.');
         setLoading(false);
       });
-  }, []);
+  }, [logout,navigate]);
 
   const handleOrderStatus = async (id, status) => {
     await updateOrderStatus(id, status);
