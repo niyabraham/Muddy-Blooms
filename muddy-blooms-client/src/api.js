@@ -1,16 +1,15 @@
 // Wake up Render backend on app load
 fetch('https://muddy-blooms-api.onrender.com/').catch(() => {});
 // ✅ CHANGE: export BASE_URL so Shop.jsx can use it for image paths
-export const BASE_URL = 'https://muddy-blooms-api.onrender.com';
+export const BASE_URL = process.env.REACT_APP_API_URL || 'https://muddy-blooms-api.onrender.com';
 const API = `${BASE_URL}/api`;
 
 const getAdminHeaders = () => {
-  const password = process.env.REACT_APP_ADMIN_PASSWORD;
-  if (!password) return {};
+  const token = sessionStorage.getItem('muddy_admin_token');
+  if (!token) return {};
 
   return {
-    'x-admin-password': password,
-    Authorization: `Bearer ${password}`,
+    Authorization: `Bearer ${token}`,
   };
 };
 

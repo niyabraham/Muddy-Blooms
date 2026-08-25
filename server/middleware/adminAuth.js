@@ -1,26 +1,23 @@
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.REACT_APP_ADMIN_PASSWORD;
+const jwt = require('jsonwebtoken');
 
 function adminAuth(req, res, next) {
-  if (!ADMIN_PASSWORD) {
+  if (!process.env.JWT_SECRET) {
     return res.status(500).json({ error: 'Admin authentication is not configured' });
   }
 
-  const xAdminPassword = req.get('x-admin-password');
   const authHeader = req.get('authorization');
-
-  let providedPassword = '';
-
-  if (xAdminPassword) {
-    providedPassword = xAdminPassword;
-  } else if (authHeader?.startsWith('Bearer ')) {
-    providedPassword = authHeader.slice(7).trim();
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  if (providedPassword === ADMIN_PASSWORD) {
+  const token = authHeader.slice(7).trim();
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
     return next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-
-  return res.status(401).json({ error: 'Unauthorized' });
 }
 
 module.exports = adminAuth;

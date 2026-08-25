@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchOrders, fetchBookings, updateOrderStatus, updateBookingStatus } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered'];
 const BOOKING_STATUSES = ['pending', 'confirmed', 'completed'];
@@ -13,6 +15,8 @@ const statusColors = {
 };
 
 export default function Admin() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [tab, setTab] = useState('orders');
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -27,6 +31,11 @@ export default function Admin() {
         setLoading(false);
       })
       .catch((err) => {
+        if (err.message === 'Unauthorized') {
+          logout();
+          navigate('/admin-login');
+          return;
+        }
         setError(err.message || 'Failed to load admin data.');
         setLoading(false);
       });

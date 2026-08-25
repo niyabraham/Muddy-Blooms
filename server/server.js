@@ -20,11 +20,13 @@ const plantRoutes   = require('./routes/plants');
 const orderRoutes   = require('./routes/orders');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payment');
+const adminRoutes   = require('./routes/admin');
 
 app.use('/api/plants',   plantRoutes);
 app.use('/api/orders',   orderRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payment',  paymentRoutes);
+app.use('/api/admin',    adminRoutes);
 
 // Test route
 app.get('/', (req, res) => {
