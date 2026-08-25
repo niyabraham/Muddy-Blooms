@@ -23,7 +23,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  useEffect(() => {  // eslint-disable-line react-hooks/exhaustive-deps
     Promise.all([fetchOrders(), fetchBookings()])
       .then(([o, b]) => {
         setOrders(Array.isArray(o) ? o : []);
