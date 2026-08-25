@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const Razorpay = require('razorpay');
 const router = express.Router();
 const Order = require('../models/Order');
-const Plant = require('../models/Plant');
+const computeOrderTotal = require('../utils/computeOrderTotal');
 const sendEmail = require('../utils/sendEmail');
 const adminAuth = require('../middleware/adminAuth');
 
@@ -14,7 +14,7 @@ const razorpay = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET
     })
   : null;
 
-async function verifyRazorpayPayment({ razorpayOrderId, razorpayPaymentId, razorpaySignature }) {
+async function verifyRazorpayPayment({ razorpayOrderId, razorpayPaymentId, razorpaySignature, expectedAmountPaise }) {
   if (!razorpay || !razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
     return { verified: false, reason: 'missing-payment-details' };
   }
@@ -37,6 +37,10 @@ async function verifyRazorpayPayment({ razorpayOrderId, razorpayPaymentId, razor
 
     if (payment?.order_id !== razorpayOrderId) {
       return { verified: false, reason: 'order-id-mismatch' };
+    }
+
+    if (typeof expectedAmountPaise === 'number' && payment?.amount !== expectedAmountPaise) {
+      return { verified: false, reason: 'amount-mismatch' };
     }
 
     return { verified: true };
@@ -73,41 +77,23 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing required order information' });
     }
 
-    const resolvedItems = [];
-    let totalAmount = 0;
-
-    for (const item of items) {
-      const quantity = Number(item.quantity) || 1;
-      if (quantity < 1) {
-        return res.status(400).json({ error: 'Item quantity must be at least 1' });
-      }
-
-      const plantId = item.plantId || item._id;
-      const plant = plantId
-        ? await Plant.findById(plantId)
-        : await Plant.findOne({ name: item.name });
-
-      if (!plant) {
-        return res.status(400).json({ error: `Plant not found for ${item.name || 'unknown item'}` });
-      }
-
-      resolvedItems.push({
-        plantId: plant._id,
-        name: plant.name,
-        price: plant.price,
-        quantity,
-      });
-
-      totalAmount += plant.price * quantity;
+    let resolvedItems, totalAmount;
+    try {
+      ({ resolvedItems, totalAmount } = await computeOrderTotal(items));
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
 
     const paymentVerification = await verifyRazorpayPayment({
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
       razorpaySignature: razorpay_signature,
+      expectedAmountPaise: Math.round(totalAmount * 100),
     });
 
-    const paymentStatus = paymentVerification.verified ? 'paid' : 'unpaid';
+    if (!paymentVerification.verified) {
+      return res.status(402).json({ error: 'Payment could not be verified. Please contact support before trying again.' });
+    }
 
     const order = new Order({
       customerName,
@@ -116,7 +102,7 @@ router.post('/', async (req, res) => {
       address,
       items: resolvedItems,
       totalAmount,
-      paymentStatus,
+      paymentStatus: 'paid',
     });
 
     await order.save();

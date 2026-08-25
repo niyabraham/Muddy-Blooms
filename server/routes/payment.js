@@ -2,19 +2,21 @@ const express = require('express');
 const router = express.Router();
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
+const computeOrderTotal = require('../utils/computeOrderTotal');
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// Create a Razorpay order
+// Create a Razorpay order — amount is computed from real DB prices, never trusted from the client
 router.post('/create-order', async (req, res) => {
   try {
-    const { amount } = req.body; // amount in rupees
+    const { items } = req.body;
+    const { totalAmount } = await computeOrderTotal(items);
 
     const options = {
-      amount: amount * 100, // Razorpay needs amount in paise
+      amount: Math.round(totalAmount * 100), // paise
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
     };
@@ -23,7 +25,7 @@ router.post('/create-order', async (req, res) => {
     res.json(order);
   } catch (err) {
     console.log('Razorpay order error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 

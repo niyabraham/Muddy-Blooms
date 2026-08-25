@@ -15,57 +15,64 @@ export default function Checkout() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleOrder = async () => {
+const handleOrder = async () => {
   if (!form.name || !form.phone || !form.address) return;
   setLoading(true);
 
   try {
-    // Step 1: Create Razorpay order
-    const razorpayOrder = await createRazorpayOrder(totalPrice);
+    const cartPayload = cartItems.map(item => ({
+      plantId: item._id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    // Step 1: Create Razorpay order — amount is computed server-side, not sent from here
+    const razorpayOrder = await createRazorpayOrder(cartPayload);
 
     // Step 2: Open Razorpay Checkout popup
     const options = {
-      key: 'rzp_test_T2dwMgnwrT3lXB', // replace with your actual test Key ID
+      key: 'rzp_live_TTUjZr9PBCYZ3C', // replace with your actual Key ID
       amount: razorpayOrder.amount,
       currency: 'INR',
       name: 'Muddy Blooms',
       description: 'Plant Order Payment',
       order_id: razorpayOrder.id,
       handler: async function (response) {
-        // Step 3: Verify payment signature
-        const verification = await verifyPayment({
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        });
+        try {
+          // Step 3: Verify payment signature
+          const verification = await verifyPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
 
-        if (verification.verified) {
+          if (!verification.verified) {
+            alert('Payment verification failed. Please contact support.');
+            return;
+          }
+
           // Step 4: Save order to database
           const order = await createOrder({
             customerName: form.name,
             customerPhone: form.phone,
             customerEmail: form.email,
             address: `${form.address}, ${form.city} - ${form.pincode}`,
-            items: cartItems.map(item => ({
-              plantId: item._id,
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-            })),
-            totalAmount: totalPrice,
+            items: cartPayload,
             razorpay_order_id: response.razorpay_order_id,
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_signature: response.razorpay_signature,
           });
-          
+
           setOrderId(order._id);
           setFinalTotal(totalPrice);
           clearCart();
           setSubmitted(true);
-        } else {
-          alert('Payment verification failed. Please contact support.');
+        } catch (err) {
+          alert(err.message || `Something went wrong saving your order. Your payment ID is ${response.razorpay_payment_id} — please contact support with this reference.`);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       },
       prefill: {
         name: form.name,
@@ -86,7 +93,7 @@ export default function Checkout() {
     rzp.open();
 
   } catch (err) {
-    alert('Something went wrong. Please try again.');
+    alert(err.message || 'Something went wrong. Please try again.');
     setLoading(false);
   }
 };

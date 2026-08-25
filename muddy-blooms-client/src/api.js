@@ -24,6 +24,10 @@ export const createOrder = async (orderData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderData),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to create order (${res.status})`);
+  }
   return res.json();
 };
 
@@ -91,12 +95,16 @@ export const updateBookingStatus = async (id, status) => {
   return res.json();
 };
 
-export const createRazorpayOrder = async (amount) => {
+export const createRazorpayOrder = async (items) => {
   const res = await fetch(`${API}/payment/create-order`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify({ items }),
   });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to start payment (${res.status})`);
+  }
   return res.json();
 };
 
